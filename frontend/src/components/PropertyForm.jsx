@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const CONDITIONS = ['Excellent', 'Good', 'Fair', 'Poor', 'Gut Rehab'];
 
@@ -24,6 +24,21 @@ const DEFAULTS = {
 
 export default function PropertyForm({ onSubmit, loading }) {
   const [form, setForm] = useState(DEFAULTS);
+
+  // Pre-fill form from URL params (when opened from Distress Filter)
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const updates = {};
+    if (params.get('address')) updates.address = params.get('address');
+    if (params.get('zip'))     updates.zip      = params.get('zip');
+    if (params.get('sqft'))    updates.sqft     = params.get('sqft');
+    if (params.get('yearBuilt')) updates.yearBuilt = params.get('yearBuilt');
+    if (params.get('beds'))    updates.beds     = params.get('beds');
+    if (params.get('baths'))   updates.baths    = params.get('baths');
+    if (Object.keys(updates).length > 0) {
+      setForm(f => ({ ...f, ...updates }));
+    }
+  }, []);
 
   function set(key, val) {
     setForm((f) => ({ ...f, [key]: val }));
