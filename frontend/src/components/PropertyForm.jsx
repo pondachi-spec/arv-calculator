@@ -12,6 +12,7 @@ const CONDITION_ADJ = {
 
 const DEFAULTS = {
   address: '',
+  zip: '',
   beds: '3',
   baths: '2',
   sqft: '1500',
@@ -32,6 +33,7 @@ export default function PropertyForm({ onSubmit, loading }) {
     e.preventDefault();
     onSubmit({
       address: form.address,
+      zip: form.zip,
       beds: Number(form.beds),
       baths: Number(form.baths),
       sqft: Number(form.sqft),
@@ -54,6 +56,19 @@ export default function PropertyForm({ onSubmit, loading }) {
           placeholder="123 Main St, Dallas, TX 75201"
           value={form.address}
           onChange={(e) => set('address', e.target.value)}
+          required
+        />
+      </div>
+
+      {/* Zip Code */}
+      <div>
+        <label className="block text-xs font-medium text-slate-400 mb-1.5">Zip Code *</label>
+        <input
+          className="input-field"
+          placeholder="33605"
+          value={form.zip}
+          onChange={(e) => set('zip', e.target.value)}
+          maxLength={5}
           required
         />
       </div>

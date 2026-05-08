@@ -24,9 +24,8 @@ async function fetchComps(subject) {
         // Query ArcGIS for recent sales in same zip with similar property type
         const params = new URLSearchParams({
             where: `PHY_ZIPCD='${zipCode}' AND SALE_PRC1 > 10000 AND SALE_YR1 >= ${twoYearsAgo}`,
-            outFields: 'PHY_ADDR1,PHY_CITY,PHY_ZIPCD,SALE_PRC1,SALE_YR1,SALE_MO1,JV,DOR_UC,NO_BULDNG',
+            outFields: 'PHY_ADDR1,PHY_CITY,PHY_ZIPCD,SALE_PRC1,SALE_YR1,SALE_MO1,JV,DOR_UC',
             returnGeometry: 'false',
-            resultRecordCount: '50',
             f: 'json'
         });
 
@@ -44,9 +43,10 @@ async function fetchComps(subject) {
 
         const data = await resp.json();
         if (data.error) {
-            console.warn('[ARV-COMPS] ArcGIS query error:', data.error.message, '— using mock comps');
+            console.warn('[ARV-COMPS] ArcGIS query error:', JSON.stringify(data.error), '— using mock comps');
             return { comps: generateMockComps(subject), isMock: true };
         }
+        console.log(`[ARV-COMPS] ArcGIS returned ${(data.features || []).length} features`);
 
         const features = data.features || [];
         if (!features.length) {

@@ -8,7 +8,7 @@ const { calculate, calcMAO, dealScore } = require('../services/arvEngine');
 // POST /api/arv/calculate
 router.post('/calculate', async (req, res) => {
   try {
-    const { address, beds, baths, sqft, yearBuilt, condition, repairCost, purchasePrice } = req.body;
+    const { address, beds, baths, sqft, yearBuilt, condition, repairCost, purchasePrice, zip } = req.body;
 
     if (!address || !sqft || !condition) {
       return res.status(400).json({ error: 'address, sqft, and condition are required' });
@@ -21,7 +21,7 @@ router.post('/calculate', async (req, res) => {
     // Fetch comps & AI analysis in parallel
     const [{ comps, isMock: isMockComps }, { analysis: conditionAnalysis, isMock: isMockAI }] =
       await Promise.all([
-        fetchComps({ address, beds: Number(beds), baths: Number(baths), sqft: sqftNum }),
+        fetchComps({ address, zip: zip || '', beds: Number(beds), baths: Number(baths), sqft: sqftNum }),
         analyzeCondition(condition, address),
       ]);
 
